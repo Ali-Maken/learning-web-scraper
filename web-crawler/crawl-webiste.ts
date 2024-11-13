@@ -1,16 +1,18 @@
-import { getUrlsFromHtml, normalizeUrl } from "./crawl-helper/crawl-helpers";
+import {
+  getUrlsFromHtml,
+  normalizeUrl,
+  validateWebsiteResponse,
+} from "./crawl-helper/crawl-helpers";
 
-export async function crawlPage(
+export async function webCrawlPages(
   baseUrl: string,
   currentUrl: string,
   pages: { [key: string]: number }
 ) {
-  const currentUrlObj = new URL(currentUrl);
+  const currUrlObj = new URL(currentUrl);
   const baseUrlObj = new URL(baseUrl);
 
-  if (baseUrlObj.hostname != currentUrlObj.hostname) {
-    return pages;
-  }
+  if (baseUrlObj.hostname != currUrlObj.hostname) return pages;
 
   const normalizedCurrentUrl = normalizeUrl(currentUrl);
 
@@ -21,30 +23,18 @@ export async function crawlPage(
 
   pages[normalizedCurrentUrl] = 1;
   console.log("Actively Crawling", currentUrl);
+
   try {
     const website = await fetch(currentUrl);
-    // Good Website, wrong path
-    if (website.status > 399) {
-      console.log(
-        `error in fetch with status coode ${website.status} on page ${currentUrl}`
-      );
-      return pages;
-    }
-    // Good Website, wrong headers
-    const websiteHeader = website.headers.get("content-type");
-    if (!websiteHeader?.includes("text/html")) {
-      console.log(
-        `non html response, content: ${websiteHeader}, on page ${currentUrl}`
-      );
-      return pages;
-    }
+    const validResponse = validateWebsiteResponse(website, currentUrl);
+
+    if (!validResponse) return pages;
 
     const websiteHtml = await website.text();
-
     const nextURLs = getUrlsFromHtml(websiteHtml, baseUrl);
 
     for (const nextURL of nextURLs) {
-      pages = await crawlPage(baseUrl, nextURL, pages);
+      pages = await webCrawlPages(baseUrl, nextURL, pages);
     }
   } catch (err: any) {
     console.log(`error in fetch: ${err.message}`);

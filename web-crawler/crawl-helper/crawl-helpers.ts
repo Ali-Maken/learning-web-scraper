@@ -1,47 +1,53 @@
 import { JSDOM } from "jsdom";
 
+export function normalizeUrl(urlString: string): string {
+  const urlObj = new URL(urlString);
+  const hostPath = `${urlObj.hostname}${urlObj.pathname}`;
+  /* For Any Trailing Slashes in Path */
+  if (hostPath.length > 0 && hostPath.slice(-1) == "/") {
+    return hostPath.slice(0, -1);
+  }
+  return hostPath;
+}
+
 export function getUrlsFromHtml(htmlBody: string, urlPath: string): any[] {
   const urls: string[] = [];
   const domObj = new JSDOM(htmlBody);
 
   const linkElements = domObj.window.document.querySelectorAll("a");
 
-  Array.from(linkElements).forEach((link) => {
-    if (link.href.slice(0, 1) == "/") {
-      /* RELATIVE */
-      try {
-        const urlObj = new URL(`${urlPath}${link.href}`);
-        urls.push(urlObj.href);
-      } catch (err: any) {
-        console.log("Error : ", err.message);
+  for (const link of Array.from(linkElements)) {
+    let returnUrlPath: string;
+    try {
+      if (link.href.slice(0, 1) == "/") {
+        returnUrlPath = `${urlPath}${link.href}`;
+      } else {
+        returnUrlPath = link.href;
       }
-    } else {
-      /* ABSOLUTE */
-      try {
-        const urlObj = new URL(link.href);
-        urls.push(urlObj.href);
-      } catch (err: any) {
-        console.log("Error : ", err.message);
-      }
+
+      const urlObj = new URL(returnUrlPath);
+      urls.push(urlObj.href);
+    } catch (err: any) {
+      console.log("Error : ", err.message);
     }
-  });
+  }
 
   return urls;
 }
 
-export function normalizeUrl(urlString: string): string {
-  /*
-  Removes the http, https, and capitalization.
-  Essentially, Normalizes the given URL.
-  */
-
-  const urlObj = new URL(urlString);
-  const hostPath = `${urlObj.hostname}${urlObj.pathname}`;
-
-  /* For Any Trailing Slashes in Path */
-  if (hostPath.length > 0 && hostPath.slice(-1) == "/") {
-    return hostPath.slice(0, -1);
+export function validateWebsiteResponse(websiteResp: Response, url: string) {
+  // Wrong path
+  if (websiteResp.status > 399) {
+    console.log(
+      `error in fetch with status coode ${websiteResp.status} on page ${url}`
+    );
+    return false;
   }
-
-  return hostPath;
+  // Non HTML headers
+  const websiteHeader = websiteResp.headers.get("content-type");
+  if (!websiteHeader?.includes("text/html")) {
+    console.log(`non html response, content: ${websiteHeader}, on page ${url}`);
+    return false;
+  }
+  return true;
 }
