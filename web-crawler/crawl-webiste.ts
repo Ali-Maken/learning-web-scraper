@@ -1,4 +1,4 @@
-import { getUrlsFromHtml, normalizeUrl } from "./crawl-helpers";
+import { getUrlsFromHtml, normalizeUrl } from "./crawl-helper/crawl-helpers";
 
 export async function crawlPage(
   baseUrl: string,

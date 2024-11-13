@@ -1,4 +1,4 @@
-export async function crawlSinglePage(baseUrl: string) {
+export async function crawlSinglePageAndPrintHtml(baseUrl: string) {
   console.log("Actively Crawling", baseUrl);
   try {
     const website = await fetch(baseUrl);

@@ -1,4 +1,4 @@
-export function printReport(pages: {}) {
+export function printCrawlReport(pages: {}) {
   console.log("==================");
   console.log("------REPORT------");
   console.log("==================");
