@@ -12,16 +12,16 @@ export function getUrlsFromHtml(htmlBody: string, urlPath: string): any[] {
       try {
         const urlObj = new URL(`${urlPath}${link.href}`);
         urls.push(urlObj.href);
-      } catch (err) {
-        console.log("Error : ", err);
+      } catch (err: any) {
+        console.log("Error : ", err.message);
       }
     } else {
       /* ABSOLUTE */
       try {
         const urlObj = new URL(link.href);
         urls.push(urlObj.href);
-      } catch (err) {
-        console.log("Error : ", err);
+      } catch (err: any) {
+        console.log("Error : ", err.message);
       }
     }
   });

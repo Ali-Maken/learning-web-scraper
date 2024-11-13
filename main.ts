@@ -1,4 +1,5 @@
-import { crawlSinglePage } from "./web-crawlers/crawl-single-page";
+// import { crawlSinglePage } from "./web-crawlers/crawl-single-page";
+import { printReport } from "./web-crawlers/crawl-report";
 import { crawlPage } from "./web-crawlers/crawl-webiste";
 
 async function main() {
@@ -29,13 +30,11 @@ async function main() {
 
   console.log("Starting crawl for", baseUrl);
 
+  // await crawlSinglePage(baseUrl);
+
   const pages = await crawlPage(baseUrl, baseUrl, {});
 
-  for (const page of Object.entries(pages)) {
-    console.log(page);
-  }
-
-  // await crawlSinglePage(baseUrl);
+  printReport(pages);
 }
 
 main();
