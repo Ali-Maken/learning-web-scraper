@@ -1,5 +1,15 @@
 import { JSDOM } from "jsdom";
 
+export async function crawlWebsite(baseUrl: string) {
+  console.log("Actively Crawling", baseUrl);
+
+  const websiteData = await fetch(baseUrl);
+
+  const websiteHtml = await websiteData.text();
+
+  console.log(websiteHtml);
+}
+
 export function getUrlsFromHtml(htmlBody: string, urlPath: string): any[] {
   const urls: string[] = [];
   const domObj = new JSDOM(htmlBody);
