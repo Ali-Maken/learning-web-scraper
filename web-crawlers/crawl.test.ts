@@ -1,5 +1,5 @@
 // crawl.test.ts
-import { getUrlsFromHtml, normalizeUrl } from "./crawl";
+import { getUrlsFromHtml, normalizeUrl } from "./crawl-helpers";
 import { test, expect } from "@jest/globals";
 
 /*

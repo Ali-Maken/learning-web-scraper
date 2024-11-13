@@ -1,4 +1,5 @@
-import { crawlWebsite } from "./web-crawlers/crawl";
+import { crawlSinglePage } from "./web-crawlers/crawl-single-page";
+import { crawlPage } from "./web-crawlers/crawl-webiste";
 
 async function main() {
   if (process.argv.length < 3) {
@@ -28,7 +29,13 @@ async function main() {
 
   console.log("Starting crawl for", baseUrl);
 
-  await crawlWebsite(baseUrl);
+  const pages = await crawlPage(baseUrl, baseUrl, {});
+
+  for (const page of Object.entries(pages)) {
+    console.log(page);
+  }
+
+  // await crawlSinglePage(baseUrl);
 }
 
 main();
