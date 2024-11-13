@@ -3,11 +3,35 @@ import { JSDOM } from "jsdom";
 export async function crawlWebsite(baseUrl: string) {
   console.log("Actively Crawling", baseUrl);
 
-  const websiteData = await fetch(baseUrl);
+  try {
+    const website = await fetch(baseUrl);
+    if (notValidate(website, baseUrl)) return;
 
-  const websiteHtml = await websiteData.text();
+    const websiteHtml = await website.text();
+    console.log(websiteHtml);
+  } catch (err: any) {
+    console.log(`error in fetch: ${err.message}`);
+  }
+}
 
-  console.log(websiteHtml);
+function notValidate(website: Response, baseUrl: string): boolean {
+  // Good Website, wrong path
+  if (website.status > 399) {
+    console.log(
+      `error in fetch with status coode ${website.status} on page ${baseUrl}`
+    );
+    return true;
+  }
+
+  // Good Website, wrong headers
+  const websiteHeader = website.headers.get("content-type");
+  if (!websiteHeader?.includes("text/html")) {
+    console.log(
+      `non html response, content: ${websiteHeader}, on page ${baseUrl}`
+    );
+    return true;
+  }
+  return false;
 }
 
 export function getUrlsFromHtml(htmlBody: string, urlPath: string): any[] {

@@ -16,6 +16,12 @@ async function main() {
   
   WagsLane - BootDev
   https://wagslane.dev
+
+  For wrong path check:
+  https://wagslane.dev/garbagePath
+
+  For wrong response type check i.e. non html headers:
+  https://wagslane.dev/sitemap.xml
   
   */
   const baseUrl = process.argv[2];
